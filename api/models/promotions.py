@@ -11,3 +11,5 @@ class Promotion(Base):
 
     promotion_code = Column(Integer, nullable=False)
     expiration_date = Column(DATETIME, nullable=False)
+    
+    orders = relationship("Order", back_populates="promotion")

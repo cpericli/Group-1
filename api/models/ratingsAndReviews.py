@@ -10,3 +10,8 @@ class ratingAndReview(Base):
     text = Column(String(1000), nullable=False)
     rating = Column(Integer, nullable=False)
     
+    customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
+    menu_item_id = Column(Integer, ForeignKey("menu_items.id"), nullable=False)
+
+    customer = relationship("Customer", back_populates="reviews")
+    menu_item = relationship("Menu", back_populates="reviews")

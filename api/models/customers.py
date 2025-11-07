@@ -11,3 +11,11 @@ class Customer(Base):
     email = Column(String(100), unique=True, nullable=False)
     phone = Column(String(100), unique=True, nullable=False)
     address = Column(String(100), unique=True, nullable=False)
+
+    orders = relationship("Order", back_populates="customer", cascade="all, delete-orphan")
+    reviews = relationship("RatingAndReview", back_populates="customer", cascade="all, delete-orphan")
+
+    
+
+
+    
