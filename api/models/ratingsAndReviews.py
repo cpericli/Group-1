@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from ..dependencies.database import Base
 
-class ratingAndReview(Base):
+class RatingAndReview(Base):
     __tablename__ = "ratings_and_reviews"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
