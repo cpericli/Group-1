@@ -11,5 +11,8 @@ class Sandwich(Base):
     sandwich_name = Column(String(100), unique=True, nullable=True)
     price = Column(DECIMAL(4, 2), nullable=False, server_default='0.0')
 
-    recipes = relationship("Recipe", back_populates="sandwich")
-    order_details = relationship("OrderDetail", back_populates="sandwich")
+    recipes = relationship("Recipe", back_populates="menu_item", cascade="all, delete-orphan")
+    order_details = relationship("OrderDetail", back_populates="menu_item", cascade="all, delete-orphan")
+    reviews = relationship("RatingAndReview", back_populates="menu_item", cascade="all, delete-orphan")
+
+    
