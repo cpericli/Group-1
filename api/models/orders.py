@@ -24,3 +24,25 @@ class Order(Base):
             detail.amount * detail.sandwich.price 
             for detail in self.order_details
         )
+    @property
+    def discounted_total(self):
+        """Calculate total price after applying promotion discount"""
+        base_total = self.total_price
+
+        if not self.promotion:
+            return base_total
+
+        if self.promotion.expiration_date < datetime.now():
+            return base_total
+
+        if not self.promotion.is_active:
+            return base_total
+
+        if self.promotion.discount_percentage:
+            discount = base_total * (self.promotion.discount_percentage / 100)
+            return base_total - discount
+
+        if self.promotion.discount_amount:
+            return max(0, base_total - self.promotion.discount_amount)
+
+        return base_total
