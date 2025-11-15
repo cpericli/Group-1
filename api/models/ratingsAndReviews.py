@@ -14,4 +14,4 @@ class RatingAndReview(Base):
     menu_item_id = Column(Integer, ForeignKey("menu_items.id"), nullable=False)
 
     customer = relationship("Customer", back_populates="reviews")
-    menu_item = relationship("Menu", back_populates="reviews")
+    menu_item = relationship("MenuItems", back_populates="reviews")

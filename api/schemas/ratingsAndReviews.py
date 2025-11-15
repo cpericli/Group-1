@@ -2,13 +2,13 @@ from typing import Optional
 from pydantic import BaseModel
 
 class RatingBase(BaseModel):
-    id: int
     text: str
     rating: int
 
 
 class RatingCreate(RatingBase):
-    pass
+    customer_id: int
+    menu_item_id: int
 
 
 class RatingUpdate(BaseModel):
