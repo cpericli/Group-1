@@ -2,6 +2,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 class RatingBase(BaseModel):
+    id: int
     text: str
     rating: int
 
@@ -11,6 +12,7 @@ class RatingCreate(RatingBase):
 
 
 class RatingUpdate(BaseModel):
+    id: int
     text: Optional[str] = None
     rating: Optional[int] = None
 

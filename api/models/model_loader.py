@@ -3,6 +3,10 @@ from . import orders, order_details, recipes, sandwiches, resources, customers, 
 from ..dependencies.database import engine
 
 
+RatingCreate = ratingsAndReviews.RatingCreate
+RatingUpdate = ratingsAndReviews.RatingUpdate
+RatingsAndReviews = ratingsAndReviews.Rating
+
 def index():
     orders.Base.metadata.create_all(engine)
     order_details.Base.metadata.create_all(engine)
