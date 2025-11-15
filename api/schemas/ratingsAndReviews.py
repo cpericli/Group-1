@@ -2,9 +2,10 @@ from typing import Optional
 from pydantic import BaseModel
 
 class RatingBase(BaseModel):
-    id: int
     text: str
     rating: int
+    customer_id: int
+    menu_item_id: int
 
 
 class RatingCreate(RatingBase):
@@ -12,9 +13,10 @@ class RatingCreate(RatingBase):
 
 
 class RatingUpdate(BaseModel):
-    id: int
     text: Optional[str] = None
     rating: Optional[int] = None
+    customer_id: Optional[int] = None
+    menu_item_id: Optional[int] = None
 
 
 class Rating(RatingBase):
