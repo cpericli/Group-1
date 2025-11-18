@@ -1,7 +1,8 @@
-from . import orders, order_details, menu
+from . import orders, order_details, menu, menuItems
 
 
 def load_routes(app):
     app.include_router(orders.router)
     app.include_router(order_details.router)
     app.include_router(menu.router)
+    app.include_router(menuItems.router)
