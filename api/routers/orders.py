@@ -64,3 +64,31 @@ def place_order(order_id: int, db: Session = Depends(get_db)):
             else None
         ),
     )
+
+
+@router.get("/customer/{customer_id}", response_model=list[schema.OrderWithPricing])
+def get_order_history(customer_id: int, db: Session = Depends(get_db)):
+    orders = controller.get_customer_orders(db=db, customer_id=customer_id)
+
+    result: list[schema.OrderWithPricing] = []
+    for o in orders:
+        result.append(
+            schema.OrderWithPricing(
+                id=o.id,
+                description=o.description,
+                order_status=o.order_status,
+                order_date=o.order_date,
+                customer_id=o.customer_id,
+                promotion_id=o.promotion_id,
+                order_details=o.order_details,
+                total_price=o.total_price,
+                discounted_total=o.discounted_total,
+                discount_applied=(
+                    o.total_price - o.discounted_total
+                    if o.total_price != o.discounted_total
+                    else None
+                ),
+            )
+        )
+
+    return result
