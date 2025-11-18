@@ -50,11 +50,6 @@ def delete_rating(rating_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Rating not found")
     return ratingsAndReviews.delete(db=db, rating_id=rating_id)
 
-@app.post("/promotions/", response_model=model_loader.Promotion, tags=["Promotions"])
-def create_promotion(promotion: model_loader.PromotionCreate, db: Session = Depends(get_db)):
-    """Create a new promotion"""
-    return promotions.create(db=db, promotion=promotion)
-
 @app.get("/promotions/", response_model=List[model_loader.Promotion], tags=["Promotions"])
 def read_all_promotions(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     """Get all promotions"""
@@ -80,23 +75,6 @@ def read_promotion_by_code(promotion_code: str, db: Session = Depends(get_db)):
     if not promotion:
         raise HTTPException(status_code=404, detail="Promotion code not found")
     return promotion
-
-@app.put("/promotions/{promotion_id}", response_model=model_loader.Promotion, tags=["Promotions"])
-def update_promotion(promotion_id: int, promotion: model_loader.PromotionUpdate, db: Session = Depends(get_db)):
-    """Update a promotion"""
-    db_promotion = promotions.read_one(db=db, promotion_id=promotion_id)
-    if not db_promotion:
-        raise HTTPException(status_code=404, detail="Promotion not found")
-    return promotions.update(db=db, promotion_id=promotion_id, promotion=promotion)
-
-
-@app.delete("/promotions/{promotion_id}", response_model=model_loader.Promotion, tags=["Promotions"])
-def delete_promotion(promotion_id: int, db: Session = Depends(get_db)):
-    """Delete a promotion"""
-    promotion = promotions.read_one(db=db, promotion_id=promotion_id)
-    if not promotion:
-        raise HTTPException(status_code=404, detail="Promotion not found")
-    return promotions.delete(db=db, promotion_id=promotion_id)
 
 @app.post("/promotions/apply/{order_id}/{promotion_id}", tags=["Promotions"])
 def apply_promotion(order_id: int, promotion_id: int, db: Session = Depends(get_db)):
