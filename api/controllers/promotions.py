@@ -7,14 +7,6 @@ from fastapi import HTTPException
 from decimal import Decimal
 
 
-def create(db: Session, promotion: PromotionCreate):
-    """Create a new promotion"""
-    db_promotion = Promotion(**promotion.model_dump())
-    db.add(db_promotion)
-    db.commit()
-    db.refresh(db_promotion)
-    return db_promotion
-
 
 def read_all(db: Session, skip: int = 0, limit: int = 100):
     """Get all promotions"""
@@ -38,27 +30,6 @@ def read_one(db: Session, promotion_id: int):
 def read_by_code(db: Session, promotion_code: str):
     """Get a promotion by its code"""
     return db.query(Promotion).filter(Promotion.promotion_code == promotion_code).first()
-
-
-def update(db: Session, promotion_id: int, promotion: PromotionUpdate):
-    """Update a promotion"""
-    db_promotion = db.query(Promotion).filter(Promotion.id == promotion_id).first()
-    if db_promotion:
-        update_data = promotion.model_dump(exclude_unset=True)
-        for key, value in update_data.items():
-            setattr(db_promotion, key, value)
-        db.commit()
-        db.refresh(db_promotion)
-    return db_promotion
-
-
-def delete(db: Session, promotion_id: int):
-    """Delete a promotion"""
-    db_promotion = db.query(Promotion).filter(Promotion.id == promotion_id).first()
-    if db_promotion:
-        db.delete(db_promotion)
-        db.commit()
-    return db_promotion
 
 
 def validate_promotion(db: Session, promotion_id: int) -> tuple[bool, str]:
