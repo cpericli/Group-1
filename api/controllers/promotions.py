@@ -8,9 +8,9 @@ from decimal import Decimal
 
 
 
-def read_all(db: Session, skip: int = 0, limit: int = 100):
+def read_all(db: Session):
     """Get all promotions"""
-    return db.query(Promotion).offset(skip).limit(limit).all()
+    return db.query(Promotion).all()
 
 
 def read_active(db: Session):

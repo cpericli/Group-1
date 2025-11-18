@@ -51,9 +51,9 @@ def delete_rating(rating_id: int, db: Session = Depends(get_db)):
     return ratingsAndReviews.delete(db=db, rating_id=rating_id)
 
 @app.get("/promotions/", response_model=List[model_loader.Promotion], tags=["Promotions"])
-def read_all_promotions(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def read_all_promotions(db: Session = Depends(get_db)):
     """Get all promotions"""
-    return promotions.read_all(db=db, skip=skip, limit=limit)
+    return promotions.read_all(db=db)
 
 @app.get("/promotions/active", response_model=List[model_loader.Promotion], tags=["Promotions"])
 def read_active_promotions(db: Session = Depends(get_db)):

@@ -13,7 +13,6 @@ class MenuItems(Base):
     calories = Column(Integer, nullable=False)
     food_category = Column(String(100), nullable=False)
 
-    order_details = relationship("OrderDetail", back_populates="menu_item")
     reviews = relationship("RatingAndReview", back_populates="menu_item", cascade="all, delete-orphan")
 
     

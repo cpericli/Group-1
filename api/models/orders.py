@@ -17,6 +17,7 @@ class Order(Base):
 
     promotion_id = Column(Integer, ForeignKey("promotions.id"), nullable=True)
     promotion = relationship("Promotion", back_populates="orders")
+    payment = relationship("PaymentInfo", back_populates="order", uselist=False)
     @property
     def total_price(self):
         """Calculate total price from all order details"""

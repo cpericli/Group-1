@@ -13,6 +13,5 @@ class Sandwich(Base):
 
     recipes = relationship("Recipe", back_populates="sandwich", cascade="all, delete-orphan")
     order_details = relationship("OrderDetail", back_populates="sandwich", cascade="all, delete-orphan")
-    reviews = relationship("RatingAndReview", back_populates="sandwich", cascade="all, delete-orphan")
 
     
