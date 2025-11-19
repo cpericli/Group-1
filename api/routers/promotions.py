@@ -9,19 +9,20 @@ router = APIRouter(
     prefix="/promotions"
 )
 
+@router.post("/promotions/", response_model=schema.Promotion)
+def create_promotion(promotion: schema.PromotionCreate, db: Session = Depends(get_db)):
+    return controller.create(db=db, promotion=promotion)
+
 @router.get("/", response_model=list[schema.Promotion])
 def read_all_promotions(db: Session = Depends(get_db)):
-    """Get all promotions"""
     return controller.read_all(db=db)
 
 @router.get("/active", response_model=list[schema.Promotion])
 def read_active_promotions(db: Session = Depends(get_db)):
-    """Get all active and non-expired promotions"""
     return controller.read_active(db=db)
 
 @router.get("/{promotion_id}", response_model=schema.Promotion)
 def read_one_promotion(promotion_id: int, db: Session = Depends(get_db)):
-    """Get a specific promotion"""
     promotion = controller.read_one(db=db, promotion_id=promotion_id)
     if not promotion:
         raise HTTPException(status_code=404, detail="Promotion not found")
@@ -29,11 +30,24 @@ def read_one_promotion(promotion_id: int, db: Session = Depends(get_db)):
 
 @router.get("/code/{promotion_code}", response_model=schema.Promotion)
 def read_promotion_by_code(promotion_code: str, db: Session = Depends(get_db)):
-    """Get a promotion by its code"""
     promotion = controller.read_by_code(db=db, promotion_code=promotion_code)
     if not promotion:
         raise HTTPException(status_code=404, detail="Promotion code not found")
     return promotion
+
+@router.put("/promotions/{promotion_id}", response_model=schema.Promotion)
+def update_promotion(promotion_id: int, promotion: schema.PromotionUpdate, db: Session = Depends(get_db)):
+    db_promotion = controller.read_one(db=db, promotion_id=promotion_id)
+    if not db_promotion:
+        raise HTTPException(status_code=404, detail="Promotion not found")
+    return controller.update(db=db, promotion_id=promotion_id, promotion=promotion)
+
+@router.delete("/promotions/{promotion_id}", response_model=schema.Promotion)
+def delete_promotion(promotion_id: int, db: Session = Depends(get_db)):
+    promotion = controller.read_one(db=db, promotion_id=promotion_id)
+    if not promotion:
+        raise HTTPException(status_code=404, detail="Promotion not found")
+    return controller.delete(db=db, promotion_id=promotion_id)
 
 @router.post("/apply/{order_id}/{promotion_id}")
 def apply_promotion(order_id: int, promotion_id: int, db: Session = Depends(get_db)):
