@@ -4,22 +4,17 @@ from pydantic import BaseModel
 from decimal import Decimal
 from .order_details import OrderDetail
 
-
-
 class OrderBase(BaseModel):
     description: Optional[str] = None
     order_status: str
 
-
 class OrderCreate(OrderBase):
     customer_id: int
-
 
 class OrderUpdate(BaseModel):
     description: Optional[str] = None
     order_status: Optional[str] = None
     promotion_id: Optional[int] = None
-
 
 class Order(OrderBase):
     id: int

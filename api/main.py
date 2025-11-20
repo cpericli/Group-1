@@ -7,7 +7,18 @@ from .dependencies.config import conf
 from sqlalchemy.orm import Session
 from .dependencies.database import engine, get_db
 from .controllers import ratingsAndReviews, promotions
+
+from .dependencies.database import Base
+from .dependencies.database import get_db
+from api.controllers import orders as order_controller
+from api.controllers import payment_info as payment_controller
+from api.schemas.orders import Order, OrderCreate, OrderUpdate
+from api.schemas.payment_info import Payment, PaymentCreate, PaymentUpdate
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List
+
 
 app = FastAPI()
 
@@ -21,9 +32,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 model_loader.index()
 indexRoute.load_routes(app)
-
 
 if __name__ == "__main__":
     uvicorn.run(app, host=conf.app_host, port=conf.app_port)
@@ -98,6 +118,7 @@ def delete_promotion(promotion_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Promotion not found")
     return promotions.delete(db=db, promotion_id=promotion_id)
 
+
 @app.post("/promotions/apply/{order_id}/{promotion_id}", tags=["Promotions"])
 def apply_promotion(order_id: int, promotion_id: int, db: Session = Depends(get_db)):
     """Apply a promotion to an order"""
@@ -108,3 +129,57 @@ def apply_promotion(order_id: int, promotion_id: int, db: Session = Depends(get_
 def remove_promotion(order_id: int, db: Session = Depends(get_db)):
     """Remove promotion from an order"""
     return promotions.remove_promotion_from_order(db=db, order_id=order_id)
+
+# ==========================
+#        ORDER ROUTES
+# ==========================
+
+@app.post("/orders/", response_model=Order, tags=["Orders"])
+def create_order(order: OrderCreate, db: Session = Depends(get_db)):
+    return order_controller.create(db=db, request=order)
+
+
+@app.get("/orders/", response_model=List[Order], tags=["Orders"])
+def read_all_orders(db: Session = Depends(get_db)):
+    return order_controller.read_all(db=db)
+
+
+@app.get("/orders/{order_id}", response_model=Order, tags=["Orders"])
+def read_one_order(order_id: int, db: Session = Depends(get_db)):
+    return order_controller.read_one(db=db, item_id=order_id)
+
+
+@app.put("/orders/{order_id}", response_model=Order, tags=["Orders"])
+def update_order(order_id: int, update: OrderUpdate, db: Session = Depends(get_db)):
+    return order_controller.update(db=db, item_id=order_id, request=update)
+
+
+@app.delete("/orders/{order_id}", tags=["Orders"])
+def delete_order(order_id: int, db: Session = Depends(get_db)):
+    return order_controller.delete(db=db, item_id=order_id)
+
+
+
+@app.post("/payment_info/{order_id}", response_model=Payment, tags=["PaymentInfo"])
+def create_payment(order_id: int, payment: PaymentCreate, db: Session = Depends(get_db)):
+    return payment_controller.create(db=db, payment=payment, order_id=order_id)
+
+
+@app.get("/payment_info/", response_model=List[Payment], tags=["PaymentInfo"])
+def read_all_payments(db: Session = Depends(get_db)):
+    return payment_controller.read_all(db=db)
+
+
+@app.get("/payment_info/{payment_id}", response_model=Payment, tags=["PaymentInfo"])
+def read_one_payment(payment_id: int, db: Session = Depends(get_db)):
+    return payment_controller.read_one(db=db, payment_id=payment_id)
+
+
+@app.put("/payment_info/{payment_id}", response_model=Payment, tags=["PaymentInfo"])
+def update_payment(payment_id: int, update: PaymentUpdate, db: Session = Depends(get_db)):
+    return payment_controller.update(db=db, payment_id=payment_id, update_data=update)
+
+
+@app.delete("/payment_info/{payment_id}", tags=["PaymentInfo"])
+def delete_payment(payment_id: int, db: Session = Depends(get_db)):
+    return payment_controller.delete(db=db, payment_id=payment_id)

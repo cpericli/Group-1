@@ -1,4 +1,4 @@
-from . import orders, order_details, recipes, sandwiches, resources, customers, menuItems, ratingsAndReviews,promotions, paymentInfo
+from . import orders, order_details, recipes, sandwiches, resources, customers, menuItems, ratingsAndReviews,promotions, payment_info
 from ..schemas import ratingsAndReviews as rating_schema
 from ..schemas import promotions as promo_schema
 from ..dependencies.database import engine
@@ -22,4 +22,4 @@ def index():
     menuItems.Base.metadata.create_all(engine)
     ratingsAndReviews.Base.metadata.create_all(engine)
     promotions.Base.metadata.create_all(engine)
-    paymentInfo.Base.metadata.create_all(engine)
+    payment_info.Base.metadata.create_all(engine)
