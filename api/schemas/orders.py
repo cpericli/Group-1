@@ -1,11 +1,15 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from decimal import Decimal
 from .order_details import OrderDetail
 
 class OrderBase(BaseModel):
-    description: Optional[str] = None
+    description: Optional[str] = Field(
+        default=None,
+        title="Delivery / Takeout / Dine-In",
+        description="Specify how you'd like to receive your order (e.g. 'Delivery', 'Takeout', or 'Dine-In')."
+    )
     order_status: Optional[str] = None
 
 class OrderCreate(OrderBase):
