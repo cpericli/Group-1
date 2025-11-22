@@ -11,7 +11,7 @@ def create(db: Session, request):
     new_order = order_model.Order(
         customer_id=request.customer_id,
         description=request.description,
-        order_status=order_status,
+        order_status="Not completed",
         promotion_id=getattr(request, "promotion_id", None),
     )
 
