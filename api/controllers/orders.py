@@ -9,7 +9,9 @@ def create(db: Session, request):
     new_order = order_model.Order(
         customer_id=request.customer_id,
         description=request.description,
-        order_status=getattr(request, "order_status", None),
+        order_status=request.order_status,
+        order_type=request.order_type,
+        order_notes=request.order_notes,
         promotion_id=getattr(request, "promotion_id", None),
     )
 
