@@ -6,11 +6,9 @@ from ..models import orders as order_model
 from ..models import order_details as detail_model
 
 def create(db: Session, request):
-    order_status = request.order_status or "Not completed"
-
     new_order = order_model.Order(
         customer_id=request.customer_id,
-        description=request.description,
+        description=request.order_type,
         order_status="Not completed",
         promotion_id=getattr(request, "promotion_id", None),
     )
