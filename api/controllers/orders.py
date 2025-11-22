@@ -28,6 +28,40 @@ def create(db: Session, request):
 
     return new_order
 
+def place_order(db: Session, order_id: int):
+    db_order = db.query(order_model.Order).filter(order_model.Order.id == order_id).first()
+    if not db_order:
+        raise HTTPException(status_code=404, detail="Order id not found!")
+
+    order_details = db_order.order_details
+    if not order_details:
+        raise HTTPException(status_code=400, detail="Order has no items.")
+
+    for detail in order_details:
+        sandwich = detail.sandwich
+        for recipe in sandwich.recipes:
+            resource = recipe.resource
+            required_amount = recipe.amount * detail.amount
+
+            if resource.amount < required_amount:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Insufficient {resource.item}. Need {required_amount}, have {resource.amount}."
+                )
+
+    for detail in order_details:
+        sandwich = detail.sandwich
+        for recipe in sandwich.recipes:
+            resource = recipe.resource
+            required_amount = recipe.amount * detail.amount
+            resource.amount -= required_amount
+
+    db_order.order_status = "Completed"
+    db.commit()
+    db.refresh(db_order)
+
+    return db_order
+
 
 def read_all(db: Session):
     try:
@@ -158,26 +192,3 @@ def get_customer_orders(db: Session, customer_id: int):
     return result
 
 
-def place_order(db: Session, order_id: int):
-    try:
-        order_query = (
-            db.query(order_model.Order)
-            .filter(order_model.Order.id == order_id)
-        )
-        db_order = order_query.first()
-        if not db_order:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Order id not found!",
-            )
-
-        order_query.update({"order_status": "Completed"}, synchronize_session=False)
-        db.commit()
-    except SQLAlchemyError as e:
-        error = str(e.__dict__["orig"])
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=error,
-        )
-
-    return order_query.first()
