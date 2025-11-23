@@ -53,23 +53,7 @@ def place_order(order_id: int, db: Session = Depends(get_db)):
     db_order = controller.place_order(db=db, order_id=order_id)
     if db_order is None:
         raise HTTPException(status_code=404, detail="Order not found")
-
-    return schema.OrderWithPricing(
-        id=db_order.id,
-        description=db_order.description,
-        order_status=db_order.order_status,
-        order_date=db_order.order_date,
-        customer_id=db_order.customer_id,
-        promotion_id=db_order.promotion_id,
-        order_details=db_order.order_details,
-        total_price=db_order.total_price,
-        discounted_total=db_order.discounted_total,
-        discount_applied=(
-            db_order.total_price - db_order.discounted_total
-            if db_order.total_price != db_order.discounted_total
-            else None
-        ),
-    )
+    return db_order
 
 
 @router.get("/customer/{customer_id}", response_model=list[schema.OrderWithPricing])
