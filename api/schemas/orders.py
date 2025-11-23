@@ -6,10 +6,11 @@ from .order_details import OrderDetail
 
 
 class OrderCreate(BaseModel):
-    description: Optional[str] = Field(
+    order_type: Optional[str] = Field(
         default=None,
-        title="Delivery / Takeout / Dine-In",
-        description="Specify how you'd like to receive your order (e.g. 'Delivery', 'Takeout', or 'Dine-In')."
+        title="Dine-in / Takeout / Delivery",
+        description="Specify how you'd like to receive your order "
+                    "(e.g. 'Delivery', 'Takeout', or 'Dine-In')."
     )
     customer_id: int
     promotion_id: Optional[int] = None
