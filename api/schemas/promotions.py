@@ -9,7 +9,7 @@ class PromotionBase(BaseModel):
     discount_percentage: Optional[Decimal] = None
     discount_amount: Optional[Decimal] = None
     expiration_date: datetime
-    is_active: Optional[int] = 1
+    is_active: Optional[int] = True
 
 
 class PromotionCreate(PromotionBase):

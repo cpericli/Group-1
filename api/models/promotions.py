@@ -13,6 +13,6 @@ class Promotion(Base):
     discount_percentage = Column(DECIMAL(5, 2), nullable=True)
     discount_amount = Column(DECIMAL(10, 2), nullable=True)
     expiration_date = Column(DATETIME, nullable=False)
-    is_active = Column(Integer, default=1)
+    is_active = Column(Integer, default=True)
     
     orders = relationship("Order", back_populates="promotion")
