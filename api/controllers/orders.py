@@ -4,6 +4,8 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from ..models import orders as order_model
 from ..models import order_details as detail_model
+from datetime import date, datetime, timedelta
+
 
 def create(db: Session, request):
     new_order = order_model.Order(
@@ -108,6 +110,25 @@ def read_one(db: Session, item_id: int):
         )
     return item
 
+def read_by_date_range(db: Session, start_date: date, end_date: date):
+    end_datetime = datetime.combine(end_date + timedelta(days=1), datetime.min.time())
+
+    try:
+        result = (
+            db.query(order_model.Order)
+            .filter(order_model.Order.order_date >= start_date)
+            .filter(order_model.Order.order_date < end_datetime)
+            .order_by(order_model.Order.order_date.desc())
+            .all()
+        )
+    except SQLAlchemyError as e:
+        error = str(e.__dict__["orig"])
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error,
+        )
+
+    return result
 
 def update(db: Session, item_id: int, request):
     try:

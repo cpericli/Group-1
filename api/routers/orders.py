@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from ..controllers import orders as controller
 from ..schemas import orders as schema, order_details as order_detail_schema
 from ..dependencies.database import engine, get_db
+from datetime import date
+
 
 
 router = APIRouter(
@@ -92,3 +94,11 @@ def get_order_history(customer_id: int, db: Session = Depends(get_db)):
         )
 
     return result
+
+@router.get("/by-date/", response_model=list[schema.Order])
+def read_orders_by_date(
+    start_date: date,
+    end_date: date,
+    db: Session = Depends(get_db),
+):
+    return controller.read_by_date_range(db=db, start_date=start_date, end_date=end_date)
