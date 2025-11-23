@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends
+from typing import List, Optional
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from ..dependencies.database import get_db
@@ -40,7 +41,7 @@ def update(item_id: int, request: schema.MenuUpdate, db: Session = Depends(get_d
 def delete(item_id: int, db: Session = Depends(get_db)):
     return controller.delete(db=db, item_id=item_id)
 
-@router.get("/search", response_model=list[schema.Menu])
+@router.get("/search", response_model=List[schema.Menu])
 def search_menu_items(
     q: Optional[str] = Query(
         default=None,
@@ -48,11 +49,10 @@ def search_menu_items(
     ),
     category: Optional[str] = Query(
         default=None,
-        description="Filter by food_category (e.g., 'vegetarian', 'vegan', 'dessert')."
+        description="Filter by food_category (e.g., 'vegetarian', 'vegan', 'high protein')."
     ),
     db: Session = Depends(get_db),
 ):
-
     items = controller.read_all(db=db)
 
     if q:
