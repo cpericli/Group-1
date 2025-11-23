@@ -20,27 +20,6 @@ router = APIRouter(
 def read_all(db: Session = Depends(get_db)):
     return controller.read_all(db)
 
-
-@router.get("/{item_id}", response_model=schema.Menu)
-def read_one(item_id: int, db: Session = Depends(get_db)):
-    return controller.read_one(db, item_id=item_id)
-
-
-# Customize Menu Items (admin/staff use)
-@router.post("/", response_model=schema.Menu)
-def create(request: schema.MenuCreate, db: Session = Depends(get_db)):
-    return controller.create(db=db, request=request)
-
-
-@router.put("/{item_id}", response_model=schema.Menu)
-def update(item_id: int, request: schema.MenuUpdate, db: Session = Depends(get_db)):
-    return controller.update(db=db, item_id=item_id, request=request)
-
-
-@router.delete("/{item_id}")
-def delete(item_id: int, db: Session = Depends(get_db)):
-    return controller.delete(db=db, item_id=item_id)
-
 @router.get("/search", response_model=List[schema.Menu])
 def search_menu_items(
     q: Optional[str] = Query(
@@ -71,3 +50,25 @@ def search_menu_items(
         ]
 
     return items
+
+@router.get("/{item_id}", response_model=schema.Menu)
+def read_one(item_id: int, db: Session = Depends(get_db)):
+    return controller.read_one(db, item_id=item_id)
+
+
+# Customize Menu Items (admin/staff use)
+@router.post("/", response_model=schema.Menu)
+def create(request: schema.MenuCreate, db: Session = Depends(get_db)):
+    return controller.create(db=db, request=request)
+
+
+@router.put("/{item_id}", response_model=schema.Menu)
+def update(item_id: int, request: schema.MenuUpdate, db: Session = Depends(get_db)):
+    return controller.update(db=db, item_id=item_id, request=request)
+
+
+@router.delete("/{item_id}")
+def delete(item_id: int, db: Session = Depends(get_db)):
+    return controller.delete(db=db, item_id=item_id)
+
+
