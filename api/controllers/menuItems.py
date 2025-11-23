@@ -3,9 +3,25 @@ from fastapi import HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..models import menuItems as model
+from ..models import sandwiches as sandwich_model
+from ..schemas import menu as schema
 
 
-def create(db: Session, request):
+def create(db: Session, request: schema.MenuCreate):
+    sandwich = (
+        db.query(sandwich_model.Sandwich)
+        .filter(sandwich_model.Sandwich.sandwich_name == request.dish)
+        .first()
+    )
+
+    if not sandwich:
+        sandwich = sandwich_model.Sandwich(
+            sandwich_name=request.dish,
+            price=request.price,
+        )
+        db.add(sandwich)
+        db.flush()
+
     new_item = model.MenuItems(
         dish=request.dish,
         ingredients=request.ingredients,
@@ -19,6 +35,7 @@ def create(db: Session, request):
         db.commit()
         db.refresh(new_item)
     except SQLAlchemyError as e:
+        db.rollback()
         error = str(e.__dict__["orig"])
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
