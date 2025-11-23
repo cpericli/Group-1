@@ -10,6 +10,13 @@ from .dependencies.database import engine, get_db
 from .controllers import ratingsAndReviews, promotions
 from typing import List
 
+from .dependencies.database import SessionLocal
+from .dependencies.seed_data import seed_initial_data
+
+model_loader.index()
+
+with SessionLocal() as db:
+    seed_initial_data(db)
 app = FastAPI()
 
 origins = ["*"]
@@ -22,7 +29,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-model_loader.index()
 indexRoute.load_routes(app)
 
 
