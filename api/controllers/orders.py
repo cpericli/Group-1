@@ -35,20 +35,35 @@ def place_order(db: Session, order_id: int):
     if not order_details:
         raise HTTPException(status_code=400, detail="Order has no items.")
 
+    insufficient = []
+
     for detail in order_details:
         sandwich = detail.sandwich
+
         for recipe in sandwich.recipes:
             resource = recipe.resource
             required_amount = recipe.amount * detail.amount
 
             if resource.amount < required_amount:
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"Insufficient {resource.item}. Need {required_amount}, have {resource.amount}."
-                )
+                insufficient.append({
+                    "ingredient": resource.item,
+                    "required": required_amount,
+                    "available": resource.amount,
+                    "sandwich": sandwich.sandwich_name
+                })
+
+    if insufficient:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "message": "Insufficient ingredients to fulfill this order.",
+                "missing": insufficient
+            }
+        )
 
     for detail in order_details:
         sandwich = detail.sandwich
+
         for recipe in sandwich.recipes:
             resource = recipe.resource
             required_amount = recipe.amount * detail.amount
