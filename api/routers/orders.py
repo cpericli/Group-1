@@ -4,6 +4,7 @@ from ..controllers import orders as controller
 from ..schemas import orders as schema, order_details as order_detail_schema
 from ..dependencies.database import engine, get_db
 from datetime import date
+from decimal import Decimal
 
 
 
@@ -62,24 +63,14 @@ def get_order_history(customer_id: int, db: Session = Depends(get_db)):
 
     result: list[schema.OrderWithPricing] = []
     for o in orders:
-        result.append(
-            schema.OrderWithPricing(
-                id=o.id,
-                description=o.description,
-                order_status=o.order_status,
-                order_date=o.order_date,
-                customer_id=o.customer_id,
-                promotion_id=o.promotion_id,
-                order_details=o.order_details,
-                total_price=o.total_price,
-                discounted_total=o.discounted_total,
-                discount_applied=(
-                    o.total_price - o.discounted_total
-                    if o.total_price != o.discounted_total
-                    else None
-                ),
-            )
-        )
+        order_with_pricing = schema.OrderWithPricing.model_validate(o, from_attributes=True)
+
+        # Calculate pricing (add your logic here)
+        order_with_pricing.total_price = Decimal("0.00")  # Your calculation
+        order_with_pricing.discounted_total = Decimal("0.00")  # Your calculation
+        order_with_pricing.discount_applied = None  # Your calculation
+
+        result.append(order_with_pricing)
 
     return result
 
