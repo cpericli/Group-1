@@ -130,6 +130,35 @@ def read_by_date_range(db: Session, start_date: date, end_date: date):
 
     return result
 
+def get_daily_revenue(db: Session, day: date):
+    start_dt = datetime.combine(day, datetime.min.time())
+    end_dt = start_dt + timedelta(days=1)
+
+    try:
+        orders = (
+            db.query(order_model.Order)
+            .filter(order_model.Order.order_date >= start_dt)
+            .filter(order_model.Order.order_date < end_dt)
+            .filter(order_model.Order.order_status == "Completed")
+            .all()
+        )
+    except SQLAlchemyError as e:
+        error = str(e.__dict__["orig"])
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=error,
+        )
+
+    total = 0
+    for o in orders:
+        if hasattr(o, "discounted_total") and o.discounted_total is not None:
+            total += o.discounted_total
+        else:
+            total += o.total_price
+
+    return total
+
+
 def update(db: Session, item_id: int, request):
     try:
         item_query = (
