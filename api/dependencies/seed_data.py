@@ -15,15 +15,17 @@ def seed_initial_data(db: Session):
     cheese = resource_model.Resource(item="Cheese", amount=40)
     turkey = resource_model.Resource(item="Turkey", amount=30)
     mayo = resource_model.Resource(item="Mayo", amount=20)
+    avocado = resource_model.Resource(item="Avocado", amount=0)
 
-    db.add_all([bread, lettuce, tomato, cheese, turkey, mayo])
+    db.add_all([bread, lettuce, tomato, cheese, turkey, mayo, avocado])
     db.flush()
 
     # Sandwiches
     veggie = sandwich_model.Sandwich(sandwich_name="Veggie Sandwich", price=6.50)
     turkey_sandwich = sandwich_model.Sandwich(sandwich_name="Turkey Sandwich", price=7.50)
+    avocado_deluxe = sandwich_model.Sandwich(sandwich_name="Avocado Deluxe", price=9.50)
 
-    db.add_all([veggie, turkey_sandwich])
+    db.add_all([veggie, turkey_sandwich, avocado_deluxe])
     db.flush()
 
     # Recipes
@@ -39,6 +41,10 @@ def seed_initial_data(db: Session):
         recipe_model.Recipe(sandwich_id=turkey_sandwich.id, resource_id=turkey.id, amount=2),
         recipe_model.Recipe(sandwich_id=turkey_sandwich.id, resource_id=cheese.id, amount=1),
         recipe_model.Recipe(sandwich_id=turkey_sandwich.id, resource_id=mayo.id, amount=1),
+
+        # Avocado Deluxe – this will ALWAYS fail ingredient check because avocado=0
+        recipe_model.Recipe(sandwich_id=avocado_deluxe.id, resource_id=bread.id, amount=2),
+        recipe_model.Recipe(sandwich_id=avocado_deluxe.id, resource_id=avocado.id, amount=2),
     ])
 
     # Menu items
@@ -56,6 +62,13 @@ def seed_initial_data(db: Session):
             price=7.50,
             calories=550,
             food_category="High Protein",
+        ),
+        menu_model.MenuItems(
+            dish="Avocado Deluxe",
+            ingredients="Bread, Avocado, Lettuce",
+            price=9.50,
+            calories=650,
+            food_category="Vegetarian",
         ),
     ])
 
