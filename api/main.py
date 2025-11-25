@@ -12,6 +12,13 @@ from typing import List
 
 app = FastAPI()
 
+from fastapi import FastAPI
+from .routers import payment_info
+
+app = FastAPI()
+
+app.include_router(payment_info.router)
+
 origins = ["*"]
 
 app.add_middleware(
