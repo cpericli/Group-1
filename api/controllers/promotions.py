@@ -19,6 +19,12 @@ def read_all(db: Session):
     return db.query(Promotion).all()
 
 
+def read_one(db: Session, promotion_id: int):
+    db_promotion = db.query(Promotion).filter(Promotion.id == promotion_id).first()
+    if not db_promotion:
+        raise HTTPException(status_code=404, detail="Promotion not found")
+    return db_promotion
+
 def read_active(db: Session):
     """Get all active and non-expired promotions"""
     current_time = datetime.now()
@@ -45,3 +51,4 @@ def delete(db: Session, promotion_id: int):
         db.delete(db_promotion)
         db.commit()
     return db_promotion
+
