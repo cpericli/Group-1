@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic import BaseModel, Field
 from decimal import Decimal
 from .order_details import OrderDetail
+from datetime import date
 
 
 class OrderCreate(BaseModel):
@@ -65,3 +66,7 @@ class OrderWithPricing(Order):
     total_price: Decimal
     discounted_total: Decimal
     discount_applied: Optional[Decimal] = None
+
+class DailyRevenue(BaseModel):
+    date: date
+    total_revenue: Decimal
