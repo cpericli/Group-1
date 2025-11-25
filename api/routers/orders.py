@@ -81,3 +81,11 @@ def read_orders_by_date(
     db: Session = Depends(get_db),
 ):
     return controller.read_by_date_range(db=db, start_date=start_date, end_date=end_date)
+
+@router.get("/revenue/day", response_model=schema.DailyRevenue)
+def get_daily_revenue(
+    day: date,
+    db: Session = Depends(get_db),
+):
+    total = controller.get_daily_revenue(db=db, day=day)
+    return schema.DailyRevenue(date=day, total_revenue=total)
