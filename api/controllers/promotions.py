@@ -7,7 +7,6 @@ from fastapi import HTTPException
 from decimal import Decimal
 
 def create(db: Session, promotion: PromotionCreate):
-    """Create a new promotion"""
     db_promotion = Promotion(**promotion.model_dump())
     db.add(db_promotion)
     db.commit()
@@ -15,7 +14,6 @@ def create(db: Session, promotion: PromotionCreate):
     return db_promotion
 
 def read_all(db: Session):
-    """Get all promotions"""
     return db.query(Promotion).all()
 
 
@@ -26,7 +24,6 @@ def read_one(db: Session, promotion_id: int):
     return db_promotion
 
 def read_active(db: Session):
-    """Get all active and non-expired promotions"""
     current_time = datetime.now()
     return db.query(Promotion).filter(
         Promotion.is_active == 1,
@@ -34,7 +31,6 @@ def read_active(db: Session):
     ).all()
 
 def update(db: Session, promotion_id: int, promotion: PromotionUpdate):
-    """Update a promotion"""
     db_promotion = db.query(Promotion).filter(Promotion.id == promotion_id).first()
     if db_promotion:
         update_data = promotion.model_dump(exclude_unset=True)
@@ -45,7 +41,6 @@ def update(db: Session, promotion_id: int, promotion: PromotionUpdate):
     return db_promotion
 
 def delete(db: Session, promotion_id: int):
-    """Delete a promotion"""
     db_promotion = db.query(Promotion).filter(Promotion.id == promotion_id).first()
     if db_promotion:
         db.delete(db_promotion)
