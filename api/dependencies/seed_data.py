@@ -3,6 +3,8 @@ from ..models import resources as resource_model
 from ..models import sandwiches as sandwich_model
 from ..models import recipes as recipe_model
 from ..models import menuItems as menu_model
+from ..models import promotions as promotion_model
+from datetime import datetime
 
 def seed_initial_data(db: Session):
     if db.query(resource_model.Resource).count() > 0:
@@ -26,6 +28,55 @@ def seed_initial_data(db: Session):
     avocado_deluxe = sandwich_model.Sandwich(sandwich_name="Avocado Deluxe", price=9.50)
 
     db.add_all([veggie, turkey_sandwich, avocado_deluxe])
+    db.flush()
+
+    # Promotions
+    save20 = promotion_model.Promotion(
+        promotion_code='SAVE20',
+        description='20% off your order',
+        discount_percentage=20.00,
+        discount_amount=None,
+        expiration_date=datetime(2025, 12, 31, 23, 59, 59),
+        is_active=True
+    )
+
+    black_friday = promotion_model.Promotion(
+        promotion_code='BLACKFRIDAY',
+        description='Black Friday Special - 30% off',
+        discount_percentage=30.00,
+        discount_amount=None,
+        expiration_date=datetime(2025, 11, 29, 23, 59, 59),
+        is_active=True
+    )
+
+    new_year = promotion_model.Promotion(
+        promotion_code='NEWYEAR26',
+        description='Happy New Year 2026 - 50% Your First Order in the New Year',
+        discount_percentage=50.00,
+        discount_amount=None,
+        expiration_date=datetime(2026, 1, 10, 23, 59, 59),
+        is_active=True
+    )
+
+    summer = promotion_model.Promotion(
+        promotion_code='SUMMER25',
+        description='Summer Sale - 25% off',
+        discount_percentage=25.00,
+        discount_amount=None,
+        expiration_date=datetime(2025, 8, 31, 23, 59, 59),
+        is_active=False
+    )
+
+    holidays = promotion_model.Promotion(
+        promotion_code='HAPPYH0l!DAYS',
+        description='Happy Holidays End of Year Sale - 40% off',
+        discount_percentage=40.00,
+        discount_amount=None,
+        expiration_date=datetime(2025, 12, 28, 23, 59, 59),
+        is_active=False
+    )
+
+    db.add_all([save20, black_friday, new_year, summer, holidays])
     db.flush()
 
     # Recipes
