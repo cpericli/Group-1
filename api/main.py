@@ -6,9 +6,6 @@ from .routers import index as indexRoute
 from .models import model_loader
 from .dependencies.config import conf
 from sqlalchemy.orm import Session
-from .dependencies.database import engine, get_db
-from .controllers import ratingsAndReviews, promotions
-from typing import List
 
 from .dependencies.database import SessionLocal
 from .dependencies.seed_data import seed_initial_data
