@@ -86,7 +86,7 @@ def update(db: Session, payment_id: int, update_data: PaymentUpdate):
 
 def delete(db: Session, payment_id: int):
     try:
-        payment = db.query(PPaymentInfoModel).filter(PaymentInfoModel.id == payment_id)
+        payment = db.query(PaymentInfoModel).filter(PaymentInfoModel.id == payment_id)
 
         if not payment.first():
             raise HTTPException(

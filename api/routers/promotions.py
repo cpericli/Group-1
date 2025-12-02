@@ -21,14 +21,14 @@ def read_all_promotions(db: Session = Depends(get_db)):
 def read_active_promotions(db: Session = Depends(get_db)):
     return controller.read_active(db=db)
 
-@router.put("/promotions/{promotion_id}", response_model=schema.Promotion)
+@router.put("/{promotion_id}", response_model=schema.Promotion)
 def update_promotion(promotion_id: int, promotion: schema.PromotionUpdate, db: Session = Depends(get_db)):
     db_promotion = controller.read_one(db=db, promotion_id=promotion_id)
     if not db_promotion:
         raise HTTPException(status_code=404, detail="Promotion not found")
     return controller.update(db=db, promotion_id=promotion_id, promotion=promotion)
 
-@router.delete("/promotions/{promotion_id}", response_model=schema.Promotion)
+@router.delete("/{promotion_id}", response_model=schema.Promotion)
 def delete_promotion(promotion_id: int, db: Session = Depends(get_db)):
     promotion = controller.read_one(db=db, promotion_id=promotion_id)
     if not promotion:

@@ -26,7 +26,7 @@ def update_one_rating_and_review(rating_id: int, rating: schema.RatingUpdate, db
 
 @router.delete("/{rating_id}", response_model=schema.Rating)
 def delete_rating(rating_id: int, db: Session = Depends(get_db)):
-    rating: controller.read_one(db=db, rating_id=rating_id)
+    rating = controller.delete(db=db, rating_id=rating_id)
     if rating is None:
         raise HTTPException(status_code=404, detail="Rating not found")
-    return controller.delete(db=db, rating_id=rating_id)
+    return rating
